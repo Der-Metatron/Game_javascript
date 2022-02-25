@@ -1,74 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="Metatron" content="width=device-width, initial-scale=1.0" />
-    <title>Defender</title>
+    <title>DEFENDER</title>
 
     <style>
       canvas {
-        background-color: aquamarine;
+        background-color: rgba(168, 35, 35, 0.8);
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        width: 800px;
+        padding: 1rem;
+      }
+      :root {
+        background-color: black;
+      }
+      h1 {
+        color: brown;
+        text-align: center;
       }
     </style>
 
     <script>
-      let KEY_SPACE = false;
-      let KEY_UP = false;
-      let KEY_DOWN = false;
-
+      let KEY_SPACE = false; // 32
+      let KEY_UP = false; // 38
+      let KEY_DOWN = false; // 40
+      let KEY_LEFT = false; // 37
+      let KEY_RIGHT = false; // 39
       let canvas;
       let ctx;
       let backgroundImage = new Image();
 
-      // Objekte
-
-      //Rakete
       let rocket = {
-        x: 100,
-        y: 200,
-        width: 200,
-        height: 80,
-        scr: `./img/rocket.png`,
-      };
-      //sat
-      let sat = {
-        x: 500,
+        x: 50,
         y: 200,
         width: 100,
-        height: 40,
-        scr: `./img/sat.png`,
+        height: 50,
+        src: "img/ufo1.png",
       };
 
-      //  TastaturZahl 32 38 40 37 39
+      let ufos = [];
+      let shots = [];
+      // Taste Unten
       document.onkeydown = function (e) {
-        console.log(e.keyCode);
         if (e.keyCode == 32) {
+          // Leertaste gedrückt
           KEY_SPACE = true;
         }
-        // KEYCODE
+
         if (e.keyCode == 38) {
+          // Nach oben gedrückt
           KEY_UP = true;
         }
+
         if (e.keyCode == 40) {
+          // Nach unten gedrückt
           KEY_DOWN = true;
         }
+        if (e.keyCode == 37) {
+          KEY_LEFT = true;
+        }
+        if (e.keyCode == 39) {
+          KEY_RIGHT = true;
+        }
       };
+      // Taste Links
+      document.onkeyleft = function (e) {
+        if (e.keyCode == 37) {
+          // Leertaste gedrückt
+          KEY_SPACE = true;
+        }
 
-      // TASTENLOSLASEN
+        if (e.keyCode == 38) {
+          // Nach oben gedrückt
+          KEY_UP = true;
+        }
+
+        if (e.keyCode == 40) {
+          // Nach unten gedrückt
+          KEY_DOWN = true;
+        }
+        if (e.keyCode == 37) {
+          KEY_LEFT = true;
+        }
+        if (e.keyCode == 39) {
+          KEY_RIGHT = true;
+        }
+      };
+      // Taste Rechts
+      document.onkeyright = function (e) {
+        if (e.keyCode == 39) {
+          // Leertaste gedrückt
+          KEY_SPACE = true;
+        }
+
+        if (e.keyCode == 38) {
+          // Nach oben gedrückt
+          KEY_UP = true;
+        }
+
+        if (e.keyCode == 40) {
+          // Nach unten gedrückt
+          KEY_DOWN = true;
+        }
+        if (e.keyCode == 37) {
+          KEY_LEFT = true;
+        }
+        if (e.keyCode == 39) {
+          KEY_RIGHT = true;
+        }
+      };
+      // Taste Oben
       document.onkeyup = function (e) {
         if (e.keyCode == 32) {
+          // Leertaste losgelassen
           KEY_SPACE = false;
         }
+
         if (e.keyCode == 38) {
+          // Nach oben losgelassen
           KEY_UP = false;
         }
+
         if (e.keyCode == 40) {
+          // Nach unten losgelassen
           KEY_DOWN = false;
         }
+        if (e.keyCode == 37) {
+          KEY_LEFT = false;
+        }
+        if (e.keyCode == 39) {
+          KEY_RIGHT = false;
+        }
       };
-
-      // DRAW
 
       function startGame() {
         canvas = document.getElementById("canvas");
@@ -77,7 +145,7 @@
         setInterval(update, 1000 / 25);
         setInterval(createUfos, 5000);
         setInterval(checkForCollion, 1000 / 25);
-        setInterval(checkForShoot, 1000 / 10); // Deine Hausaufgabe
+        setInterval(checkForShoot, 1000 / 10);
         draw();
       }
 
@@ -95,7 +163,6 @@
             ufos = ufos.filter((u) => u != ufo);
           }
 
-          // Deine Hausaufgabe
           shots.forEach(function (shot) {
             // Kontrollieren, ob Laser mit Rakete kollidiert
             if (
@@ -122,14 +189,13 @@
           y: Math.random() * 500, // Wir platzieren unsere UFOs an einem zufälligen Ort
           width: 100,
           height: 40,
-          src: "img/ufo.png",
+          src: "img/sat.png",
           img: new Image(),
         };
         ufo.img.src = ufo.src; // Ufo-Bild wird geladen.
         ufos.push(ufo);
       }
 
-      // Deine Hausaufgabe
       function checkForShoot() {
         if (KEY_SPACE) {
           let shot = {
@@ -167,12 +233,9 @@
       }
 
       function loadImages() {
-        backgroundImage.scr = `./img/clouds.jpg`;
+        backgroundImage.src = "img/back1.jpg";
         rocket.img = new Image();
         rocket.img.src = rocket.src;
-
-        sat.img = new Image();
-        sat.img.src = sat.src;
       }
 
       function draw() {
@@ -185,12 +248,23 @@
           rocket.height
         );
 
+        ufos.forEach(function (ufo) {
+          ctx.drawImage(ufo.img, ufo.x, ufo.y, ufo.width, ufo.height);
+        });
+
+        shots.forEach(function (shot) {
+          ctx.drawImage(shot.img, shot.x, shot.y, shot.width, shot.height);
+        });
+
         requestAnimationFrame(draw);
       }
     </script>
   </head>
+  <h1>DEFENDER</h1>
 
   <body onload="startGame()">
-    <canvas id="canvas" width="720" height="480"> </canvas>
+    <br />
+    <br />
+    <canvas id="canvas" width="920" height="640"></canvas>
   </body>
 </html>
